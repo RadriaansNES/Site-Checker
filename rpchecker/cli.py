@@ -23,6 +23,13 @@ def read_user_cli_args():
         default="",
         help="read URLs from a file",
     )
+    # Asynch return
+    parser.add_argument(
+        "-a",
+        "--asynchronous",
+        action="store_true",
+        help="run the connectivity check asynchronously",
+    )
     return parser.parse_args()
 
 ## Display check results

@@ -1,7 +1,8 @@
 import sys
+import asyncio
 from rpchecker.cli import read_user_cli_args
 import pathlib
-from rpchecker.checker import site_is_online
+from rpchecker.checker import site_is_online, site_is_online_async
 from rpchecker.cli import display_check_result, read_user_cli_args
 
 
@@ -12,7 +13,11 @@ def main():
     if not urls:
         print("Error: no URLs to check", file=sys.stderr)
         sys.exit(1)
-    _synchronous_check(urls)
+        
+    if user_args.asynchronous:
+        asyncio.run(_asynchronous_check(urls))
+    else:
+        _synchronous_check(urls)
 
 ## Store the list of URLS at CL into list, return it (if any provided)
 def _get_websites_urls(user_args):
@@ -44,6 +49,20 @@ def _synchronous_check(urls):
             result = False
             error = str(e)
         display_check_result(result, url, error)
+
+## Function to call async
+async def _asynchronous_check(urls):
+    async def _check(url):
+        error = ""
+        try:
+            result = await site_is_online_async(url)
+        except Exception as e:
+            result = False
+            error = str(e)
+        display_check_result(result, url, error)
+
+    await asyncio.gather(*(_check(url) for url in urls))
+
 
 ## Script trigger
 if __name__ == "__main__":
