@@ -1,7 +1,7 @@
 from http.client import HTTPConnection
 from urllib.parse import urlparse
 
-## Create method which takes a url and timeout arguement. 
+## Create function which takes a url and timeout arguement. 
 def site_is_online(url, timeout=2):
     """Return True if the target URL is online.
 
